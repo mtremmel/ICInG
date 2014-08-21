@@ -1,4 +1,4 @@
 pyCosmoColl
-===========
+======================
 
-script that creates initial conditions for an isolated cosmological collapsing halo of dark matter and gas
+script I made to create isolated cosmological collapse innitial conditions for a given mass, redshift, etc.
