@@ -314,7 +314,9 @@ The Units will be cosmo50 units.
 	        #        vmag[toobig] = np.sqrt(fracH*(vHubDark[toobig] - vInFall_Dark[toobig])**2)
 	        #plt.plot(rDark_Perturb,vmag,'.',markersize=0.5)
 	        #plt.show()
-		#vInFall_Dark  = np.sqrt(vInFall_Dark**2 - vmag**2)
+		bad, = np.where(vmag**2 > (vHubDark-vInFall_Dark)**2)
+		vmag[bad] = np.sqrt(vHubDark-vInFall_Dark)**2
+		vInFall_Dark  = np.sqrt(vInFall_Dark**2 - vmag**2)
 	        Omega = np.random.random(Ndark) * 2.*np.pi  #random angle [0,2pi)
 	        Theta = np.arccos(posDark_Perturb[:,2]/rDark_Perturb)
 	        Phi = np.arctan(posDark_Perturb[:,1]/posDark_Perturb[:,0])
@@ -330,6 +332,7 @@ The Units will be cosmo50 units.
 
 	if Ndark > 0:
 	        velDark_rad = vHubDark - vInFall_Dark #unlike Evrard 1988, we are working in PHYSICAL units. Also, take out the energy from tangential motion   
+		if TdivR > 0: velDark_rad = np.sqrt(velDark_rad**2 - vmag**2)
        		velDark[:,0] += velDark_rad*np.sin(np.arccos(posDark_Perturb[:,2]/rDark_Perturb))*posDark[:,0]/np.sqrt(posDark_Perturb[:,0]**2+posDark_Perturb[:,1]**2)
         	velDark[:,1] += velDark_rad*np.sin(np.arccos(posDark_Perturb[:,2]/rDark_Perturb))*posDark[:,1]/np.sqrt(posDark_Perturb[:,0]**2+posDark_Perturb[:,1]**2)
         	velDark[:,2] += velDark_rad*(posDark_Perturb[:,2]/rDark_Perturb)
