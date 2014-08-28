@@ -176,7 +176,6 @@ Ngas    = number of gas particles desired ("oversample" -> Ndark > Ngas)
 avir    = the fraction of the initial sphirical radius that will be virialized at z = zend (rvir = Rsphere/avir). Actual radius is set by a combination of Mvir, a, zend, and zstart
 lambda  = Factor that gives the total angular momentum of the system (lambda = L*E**0.5 / G*M**(5/2), E ~ gravitational binding energy ~ G*M**2/ R (not a bad approx for now...)
 K/E     = ratio if random tangential kinetic energy given to particles to their total energy (within the perturbed distribution). 0 more realistic but results in unrealistic instabilities. Best to choose             smallest number that washes out radial instabilities. (0.005 or 0.01)
-fracH   = maximum fraction of the hubble flow kinetic energy that can be given to random rangential motion. Suggested: 0.1 (to get NFW halos). Set really high (>>1) if you do not want this limit, but this            will likely result in an unnaturally cored system.
 OverSamp = factor by which dark matter has been "oversampled". e.g. 2 -> 2:1 -> 8 times the "normal" number of DM particles.
 temp     = background temperature or the gas. Only matters if Ngas > 0. The code assumes that T(r) = temp * (1+delta(r))**(2/3), i.e. adiabatic contraction from a uniform temperature of temp.
 Name    = Name desired for IC binary files (Name.bin, Name.tbin) 
@@ -187,7 +186,7 @@ The Units will be cosmo50 units.
 
 	'''
 	#get necessary inputs
-	Mvir, zstart, zend, Ndark, Ngas, avir,Lambda, KdivE,fracH,OverSamp,temp,Name = getInputs.ICinputs()
+	Mvir, zstart, zend, Ndark, Ngas, avir,Lambda, TdivR,OverSamp,temp,Name = getInputs.ICinputs()
 	
 	print "The parameters you have chosen are:\n"
 	print "Mvir: ", Mvir, "\n"
@@ -197,8 +196,8 @@ The Units will be cosmo50 units.
 	print "Ngas: ", Ngas, "\n"
 	print "avir: ", avir, "\n"
 	print "Lambda: ", Lambda, "\n"
-	print "KdivE: ", KdivE, "\n"
-	print "fracH: ", fracH, "\n"
+	print "TdivR: ", TdivR, "\n"
+#	print "fracH: ", fracH, "\n"
 	print "OverSamp: ", OverSamp, "\n"
 	print "temp: ", temp, "\n"
 	print "Name: ", Name, "\n"
@@ -272,7 +271,20 @@ The Units will be cosmo50 units.
 	if Lambda > 0:
 	        print "putting in angular momentum, Lambda ", Lambda
 	        Mtot = MDark.sum()
-	        E = Mtot**2/rsphere #Binding energy of the (constant density) sphere (to order unity)
+		EgGas = np.array([])
+		EgDark = np.array([])
+		EkhubDark = np.array([])
+		EkhubGas = np.array([])
+		if Ndark >0:
+			EgDark = Potential(rDark_Perturb,delta0,rsphere,zstart)*MDark
+			EkhubDark = 0.5*MDark*(vHubDark - vInFall_Dark)**2
+		if Ngas > 0: 
+			EgGas = Potential(rGas_Perturb,delta0,rsphere,zstart)*MGas
+			EkhubGas = 0.5*MGas*(vHubGas - vInFall_Gas)**2
+	        Eg = EgDark.sum()+EgGas.sum() #Binding energy of the (constant density) sphere (to order unity)
+		Ek = EkhubGas.sum()+EkhubDark.sum()
+		if Eg + Ek > 0: print "uh oh, positive energy!!!!"
+		E = np.abs(Eg + Ek)
 	        L = Lambda*Mtot**(5./2.)/E**(0.5) #From Peebles book
 	        I = (2./5.)*Mtot*rsphere**2  #approximate moment of inertia to be that of a uniform sphere... the perturbations should be small enough for this to be relatively accurate
 	        w = L/I
@@ -290,17 +302,19 @@ The Units will be cosmo50 units.
 	                velDark[:,1] += vphi_Dark*(posDark_Perturb[:,0]/rxyDark)
 
 	#put in random motions for DM
-	if KdivE > 0 and Ndark > 0:
-	        print "putting in random tangential velocities with K/T", KdivE
-	        Energy = Potential(rDark_Perturb,delta0,rsphere,zstart) + 0.5*(vHubDark - vInFall_Dark)**2
-	        if np.size(np.where(Energy > 0)) > 0 : print "uh oh... unbound objects??"
-	        vmag = np.sqrt(-2.0*KdivE*Energy) #random direction tangential motion will have KE as a fraction (KdivE) of the local potential energy
-	        if fracH > 0:
-	                toobig, = np.where(vmag**2 > fracH*(vHubDark - vInFall_Dark)**2)
-	                print "warning some random motions to big rmin ", rDark_Perturb[toobig].min(), " rmax", rDark_Perturb[toobig].max()
-	                vmag[toobig] = np.sqrt(fracH*(vHubDark[toobig] - vInFall_Dark[toobig])**2)
+	if TdivR > 0 and Ndark > 0:
+	        print "putting in random tangential velocities with Krand/Kradial", TdivR
+		vmag = TdivR *vInFall_Dark
+	        #Energy = Potential(rDark_Perturb,delta0,rsphere,zstart) + 0.5*(vHubDark - vInFall_Dark)**2
+	        #if np.size(np.where(Energy > 0)) > 0 : print "uh oh... unbound objects??"
+	        #vmag = np.sqrt(-2.0*TdivR*Energy) #random direction tangential motion will have KE as a fraction (KdivE) of the local potential energy
+	        #if fracH > 0:
+	        #        toobig, = np.where(vmag**2 > fracH*(vHubDark - vInFall_Dark)**2)
+	        #        print "warning some random motions to big rmin ", rDark_Perturb[toobig].min(), " rmax", rDark_Perturb[toobig].max()
+	        #        vmag[toobig] = np.sqrt(fracH*(vHubDark[toobig] - vInFall_Dark[toobig])**2)
 	        #plt.plot(rDark_Perturb,vmag,'.',markersize=0.5)
 	        #plt.show()
+		#vInFall_Dark  = np.sqrt(vInFall_Dark**2 - vmag**2)
 	        Omega = np.random.random(Ndark) * 2.*np.pi  #random angle [0,2pi)
 	        Theta = np.arccos(posDark_Perturb[:,2]/rDark_Perturb)
 	        Phi = np.arctan(posDark_Perturb[:,1]/posDark_Perturb[:,0])
@@ -310,41 +324,21 @@ The Units will be cosmo50 units.
 	        vTanRand[:,2] = vmag*(-1.0*np.sin(Omega)*np.sin(Theta))
 	        velDark += vTanRand
 	
-	if Ndark > 0: vTanTotDark = np.sqrt(velDark[:,0]**2+velDark[:,1]**2+velDark[:,2]**2)
-	if Ngas > 0: vTanTotGas = np.sqrt(velGas[:,0]**2+velGas[:,1]**2+velGas[:,2]**2)
+#	if Ndark > 0: vTanTotDark = np.sqrt(velDark[:,0]**2+velDark[:,1]**2+velDark[:,2]**2)
+#	if Ngas > 0: vTanTotGas = np.sqrt(velGas[:,0]**2+velGas[:,1]**2+velGas[:,2]**2)
 
 
 	if Ndark > 0:
 	        velDark_rad = vHubDark - vInFall_Dark #unlike Evrard 1988, we are working in PHYSICAL units. Also, take out the energy from tangential motion   
-	        if KdivE > 0 or Lambda > 0:
-	                if fracH > 0:
-	                        problem, = np.where(velDark_rad**2 < vTanTotDark**2)
-	                        if np.size(problem) > 0:
-	                                OK, = np.where(velDark_rad > vTanTotDark)
-	                                velDark_rad[problem] = 0
-	                                velDark_rad[OK] = np.sqrt(velDark_rad[OK]**2 - vTanTotDark[OK]**2)
-	                        else:
-	                                velDark_rad = np.sqrt(velDark_rad**2 - vTanTotDark**2)
-	                else:
-	                        velDark_rad = np.sqrt(velDark_rad**2 - vphi_Dark**2)
-       		velDark[:,0] += velDark_rad*np.sin(np.arccos(posDark_Perturb[:,2]/rDark))*posDark[:,0]/np.sqrt(posDark[:,0]**2+posDark[:,1]**2)
-        	velDark[:,1] += velDark_rad*np.sin(np.arccos(posDark_Perturb[:,2]/rDark))*posDark[:,1]/np.sqrt(posDark[:,0]**2+posDark[:,1]**2)
-        	velDark[:,2] += velDark_rad*(posDark[:,2]/rDark)
+       		velDark[:,0] += velDark_rad*np.sin(np.arccos(posDark_Perturb[:,2]/rDark_Perturb))*posDark[:,0]/np.sqrt(posDark_Perturb[:,0]**2+posDark_Perturb[:,1]**2)
+        	velDark[:,1] += velDark_rad*np.sin(np.arccos(posDark_Perturb[:,2]/rDark_Perturb))*posDark[:,1]/np.sqrt(posDark_Perturb[:,0]**2+posDark_Perturb[:,1]**2)
+        	velDark[:,2] += velDark_rad*(posDark_Perturb[:,2]/rDark_Perturb)
 	if Ngas > 0:
 	
 	        velGas_rad =  vHubGas - vInFall_Gas
-	        if Lambda > 0:
-	                        problem, = np.where(velGas_rad**2 < vTanTotGas**2)
-	                        if np.size(problem) > 0:
-	                                OK, = np.where(velGas_rad > vTanTotGas)
-	                                velGas_rad[problem] = 0
-	                                velGas_rad[OK] = np.sqrt(velGas_rad[OK]**2 - vTanTotGas[OK]**2)
-	                        else:
-	                                velGas_rad = np.sqrt(velGas_rad**2 - vTanTotGas**2)
-
-	        velGas[:,0] += velGas_rad*np.sin(np.arccos(posGas[:,2]/rGas))*posGas[:,0]/np.sqrt(posGas[:,0]**2+posGas[:,1]**2)
-	        velGas[:,1] += velGas_rad*np.sin(np.arccos(posGas[:,2]/rGas))*posGas[:,1]/np.sqrt(posGas[:,0]**2+posGas[:,1]**2)
-	        velGas[:,2] += velGas_rad*(posGas[:,2]/rGas)
+	        velGas[:,0] += velGas_rad*np.sin(np.arccos(posGas_Perturb[:,2]/rGas))*posGas_Perturb[:,0]/np.sqrt(posGas_Perturb[:,0]**2+posGas_Perturb[:,1]**2)
+	        velGas[:,1] += velGas_rad*np.sin(np.arccos(posGas_Perturb[:,2]/rGas))*posGas_Perturb[:,1]/np.sqrt(posGas_Perturb[:,0]**2+posGas_Perturb[:,1]**2)
+	        velGas[:,2] += velGas_rad*(posGask_Perturb[:,2]/rGas_Perturb)
 
 	#set gas temperature
 	temperature = 0
@@ -371,7 +365,7 @@ The Units will be cosmo50 units.
 	t0 = 2./(3.*H0)
         t = t0/(1+zstart)**(3./2)
         total_time = t0 - t	
-	# Dump particle data to disk.
+	# Change to CoMoving if prompted
 	if CoMove==1:
 		aFac = (1+zstart)**-1
 		if Ndark>0:
@@ -380,11 +374,11 @@ The Units will be cosmo50 units.
 		if Ngas>0:
                         velGas = (velGas - H*posGas_Perturb)/aFac
                         posGas_Perturb = posGas_Perturb/aFac
-		#hsml = hsml/aFac
-		#gsoft = gsoft/aFac
 		
+	#Dump to a tipsy format file
 
 	writetipsy(MGas, MDark, Ntot, Ndark, Ngas, posDark_Perturb, posGas_Perturb, velDark, velGas, temperature, hsml, gsoft,zstart,Name)
+
 	#print out important things for user reference
 	print "tbin file created in standard tipsy format!"
 	if Ngas > 0: print "Mass per particle: ", MDark[0], "(DM)", MGas[0], "(gas)"

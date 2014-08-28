@@ -60,29 +60,29 @@ def ICinputs():
 	Lambda = None
 	numerror = 0
 	while not Lambda or Lambda < 0 or Lambda > 1:
-	        try: Lambda = float(raw_input("Angular Momentum Factor, Lambda [Lambda= L*E**0.5 / G*M**(5/2)], E ~ G*M**2/ R (float, e.g. 0.005) :\n"))
+	        try: Lambda = float(raw_input("Angular Momentum Factor, Lambda [Lambda= L*E**0.5 / G*M**(5/2)], E ~ G*M**2/ R (float, e.g. 0.05) :\n"))
 	        except ValueError:
 	                print 'invalid input, please try again'
 	                numerror = 1
 	        if numerror == 0 and Lambda < 0: print "Invalid input, must be positive!"
 	        if Lambda == 0: break
-	KdivE = None
+	TdivR = None
 	numerror = 0
-	while not KdivE or KdivE < 0:
-	        try: KdivE = float(raw_input("Abs value of the Ratio of random tangential kinetic energy given to particles to their total energy. Nonzero value necessary (float, e.g. 0.001):\n"))
+	while not TdivR or TdivR < 0:
+	        try: TdivR = float(raw_input("Abs value of the Ratio of random tangential velocity to *pecular* radial velocity. Nonzero value necessary (float, e.g. 0.001):\n"))
 	        except ValueError:
 	                print 'invalid input, please try again'
 	                numerror = 1
-	        if numerror == 0 and KdivE < 0: print "Invalid input, must be positive!"
-	        if KdivE == 0: break
-	fracH = None
-	numerror = 0
-	while not fracH or fracH < 0:
-	        try: fracH = float(raw_input("maximum fraction of Hubble flow energy attained by random motion (float, e.g. 0.1):\n"))
-	        except ValueError:
-	                print 'invalid input, please try again'
-	                numerror = 1
-	        if numerror == 0 and fracH < 0: print "Invalid input, must be positive!"
+	        if numerror == 0 and TdivR < 0: print "Invalid input, must be positive!"
+	        if TdivR == 0: break
+	#fracH = None
+	#numerror = 0
+	#while not fracH or fracH < 0:
+	 #       try: fracH = float(raw_input("maximum fraction of Hubble flow energy attained by random motion (float, e.g. 0.1):\n"))
+	 #       except ValueError:
+	 #               print 'invalid input, please try again'
+	 #               numerror = 1
+	 #       if numerror == 0 and fracH < 0: print "Invalid input, must be positive!"
 	OverSamp = None
 	numerror = 0
 	while not OverSamp or OverSamp < 0:
@@ -103,4 +103,4 @@ def ICinputs():
 
 	Name = str(raw_input("Name of file. Program will output files named YourName.bin and YourName.tbin (string):\n"))
 
-	return Mvir, zstart, zend, Ndark, Ngas, avir,Lambda, KdivE,fracH,OverSamp,temp,Name
+	return Mvir, zstart, zend, Ndark, Ngas, avir,Lambda, TdivR,OverSamp,temp,Name
