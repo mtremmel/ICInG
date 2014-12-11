@@ -1,4 +1,16 @@
 pyCosmoColl
 ======================
+Script created by Michael Tremmel (University of Washington) to generate initial conditions for a cosmological collapsing, isolated halo. Can have any number of DM and Gas particles the user chooses.
 
-script I made to create isolated cosmological collapse innitial conditions for a given mass, redshift, etc.
+type help(pyCosmoColl.IC.MkCosmoSphereICs) to get information on parameters to input.
+---------------
+Installation
+--------------
+
+git clone https://github.com/mtremmel/pyCosmoColl.git
+cd pyCosmoColl
+
+
+Example:
+
+>>import pyCosmoColl
