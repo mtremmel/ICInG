@@ -160,7 +160,7 @@ def IsoSphere(Ndark, Ngas,rsphere):
 	gc.collect()
 	return posDark, posGas, rDark, rGas
 
-def MkCosmoSphereICs(CoMove=0,Mvir=5e11,zstart=6,zend=0,Ndark=2**23,Ngas=0,avir=1.3,Lambda=0.05,TdivR=0.5,OverSamp=1,temp=0,Name='IsolatedCollapse'):
+def ICInG(CoMove=0,Mvir=5e11,zstart=6,zend=0,Ndark=2**23,Ngas=0,avir=1.3,Lambda=0.05,TdivR=0.5,OverSamp=1,temp=0,Name='IsolatedCollapse'):
 	'''
 Code that creates a density perturbation IC under an Einstein-deSitter cosmology
 Written by Michael Tremmel (2014)

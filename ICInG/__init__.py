@@ -4,4 +4,4 @@ Code that creates initial conditions for an isolated cosmological collapse for a
 Modules:
 
 """
-from . import ICs 
+from . import vanilla 
