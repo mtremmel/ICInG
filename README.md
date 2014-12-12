@@ -43,7 +43,7 @@ cd ICInG
 
 python setup.py install
 
-***or****
+***or***
 
 python setup.py install --user
 
@@ -57,7 +57,9 @@ Requirements
 ---------------
 
 An updated distribution of python, scipy, numpy (suggestion: anaconda)
+
 pynbody (git@github.com:pynbody/pynbody.git)
+
 tipsy_tools (git@github.com:N-BodyShop/tipsy_tools.git)
 
 
@@ -68,6 +70,7 @@ Runnning
 Example (in python environment):
 
 >>import ICInG
+
 >>ICInG.vanilla.genICs()
 
 ------------------
