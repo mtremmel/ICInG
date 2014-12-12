@@ -21,10 +21,15 @@ A Note on Units
 -------------
 
 Uses the following units by default:
+
 Mass Unit            = 1.84793e16 Msol
+
 Distance Unit        = 50000 kpc.
 
+
+
 rho_crit is assumed to be 1 so H0 = sqrt(8*pi/3).
+
 ChaNGa and Gasoline both force G = 1
 
 
@@ -33,11 +38,17 @@ Installation
 --------------
 
 git clone https://github.com/mtremmel/ICInG.git
+
 cd ICInG
+
 python setup.py install
+
 ***or****
+
 python setup.py install --user
+
 ***or***
+
 python setup.py install --prefix=<path of your python distribution, e.g. ~/anaconda>
 
 
