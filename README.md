@@ -76,7 +76,7 @@ Example (in python environment):
 ------------------
 Support and contact
 ------------------
-send any concerns/questions/bugs to Michael Tremmel (m.tremmel6@gmail.com)
+send any concerns/questions/bugs to Michael Tremmel (m.tremmel6@gmail.com, http://www.astro.washington.edu/users/mjt29/)
 
 ------------------
 Contributing to the Code
