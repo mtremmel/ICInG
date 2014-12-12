@@ -1,4 +1,4 @@
-ICInG ( **I**solated **C**ollapse **In**itial Conditions **Ge**nerator)
+ICInG ( **I**solated **C**ollapse **In**itial Conditions **G**enerator)
 
 ---------------
 Description
