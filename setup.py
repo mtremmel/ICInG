@@ -2,14 +2,14 @@ from distutils.core import setup
 
 DESCRIPTION = 'Tools for creating initial conditions for an isolated cosmological collapse simulation '
 LONG_DESCRIPTION = open('README.md').read()
-NAME = 'pyCosmoColl'
+NAME = 'ICInG'
 VERSION = '1.0'
 AUTHOR = 'Michael Tremmel'
 AUTHOR_EMAIL = 'm.tremmel6@gmail.com'
 MAINTAINER = 'Michael Tremmel'
 MAINTAINER_EMAIL = 'm.tremmel6@gmail.com'
-URL = 'http://github.com/mtremmel/pyHoles'
-DOWNLOAD_URL = 'http://github.com/mtremmel/pyHoles'
+URL = 'http://github.com/mtremmel/ICInG'
+DOWNLOAD_URL = 'http://github.com/mtremmel/ICInG'
 LICENSE = 'BSD'
 
 
@@ -25,9 +25,9 @@ setup(name=NAME,
       url=URL,
       download_url=DOWNLOAD_URL,
       license=LICENSE,
-      package_dir={'pyCosmoColl/':''},
-      packages=['pyCosmoColl'], 
-      package_data={'pyCosmoColl':['data/snapshot_005.hdf5']},
+      package_dir={'ICInG/':''},
+      packages=['ICInG'], 
+      package_data={'ICInG':['data/snapshot_005.hdf5']},
       classifiers = ["Development Status :: 3 - Alpha",
                      "Intended Audience :: Developers",
                      "Intended Audience :: Science/Research",

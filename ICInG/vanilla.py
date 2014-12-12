@@ -7,7 +7,10 @@ from pynbody.analysis import pkdgrav_cosmo as cosmo
 import gc
 
 def writetipsy(MGas, MDark, Ntot, nDark, nGas, posDark, posGas, velDark, velGas, temperature, hsml,gsoft,zstart,Name):
-	# Dump particle data to disk.
+	'''
+	Dump particle data to disk. Create a tipsy formatted file ".bin"
+	Note: To use with ChaNGa or Gasoline, must convert to a tipsy binary using totipstd
+	'''
         print "writing data to binary file. . ."
         file = []
         file.append(struct.pack('d i i i i i i', 1./(1+zstart), Ntot, 3, nGas, nDark, 0, 0))
@@ -31,6 +34,7 @@ def writetipsy(MGas, MDark, Ntot, nDark, nGas, posDark, posGas, velDark, velGas,
 	
 	print "converting binary..."
 	os.system("totipstd <"+Name+".bin> "+Name+".tbin")
+	os.system("rm "+Name+".bin")
 	return
 
 
@@ -160,21 +164,21 @@ def IsoSphere(Ndark, Ngas,rsphere):
 	gc.collect()
 	return posDark, posGas, rDark, rGas
 
-def ICInG(CoMove=0,Mvir=5e11,zstart=6,zend=0,Ndark=2**23,Ngas=0,avir=1.3,Lambda=0.05,TdivR=0.5,OverSamp=1,temp=0,Name='IsolatedCollapse'):
+def genIC(CoMove=0,fmt = 'tipsy', Mvir=5e11,zstart=6,zend=0,Ndark=2**23,Ngas=0,avir=1.3,Lambda=0.05,TdivR=0.5,OverSamp=1,temp=0,Name='IsolatedCollapse'):
 	'''
 Code that creates a density perturbation IC under an Einstein-deSitter cosmology
 Written by Michael Tremmel (2014)
 
 Use of code:
-% python create_IsoCosmoCollapse.py Mvir zstart zend Ndark Name
+(in ipython)
+import ICInG
+ICInG.vanilla.genIC()
 
-***Code requires access to a glass uniform box***
-Default code uses one at /astro/users/mjt29/InitialConditions/IsoCosmoCollapse/snapshot_005.hdf5
-If you do not have access to this file, you must make your own (or download this one somehow) and change the file name below
-***Important: Code can only create a sphere with Npart << Npart_glass, which depends on initial glass file used.***
+requires tipsy_tools (see README file)
 
 ----Inputs----
-----User will be prompted for these ---
+CoMove  = 1 if user wants ICs in comoving coordinates (suggested: use 0)
+fmt	= file format for output. ONLY SUPPORTED FOR TIPSY FORMAT RIGHT NOW
 Mvir (in Solar masses) = final virial mass of the collapsed object required at the end of the simulation defined by zend
 zstart  = starting redshift of the simulation. Suggestion: use 6
 zend    = ending redshift of the simulation. Suggestion: use 0
@@ -188,8 +192,8 @@ temp     = background temperature or the gas. Only matters if Ngas > 0. The code
 Name    = Name desired for IC binary files (Name.bin, Name.tbin) 
 
 ----Output----
-Outputs a binary file (.bin) and a tipsy standard formab binary file (.tbin)
-The Units will be cosmo50 units.
+A tipsy standard format binary file (.tbin)
+The Units will be cosmo50 units (see README file)
 
 	'''
 	#get necessary inputs
@@ -378,8 +382,10 @@ The Units will be cosmo50 units.
 		
 	#Dump to a tipsy format file
 
-	writetipsy(MGas, MDark, Ntot, Ndark, Ngas, posDark_Perturb, posGas_Perturb, velDark, velGas, temperature, hsml, gsoft,zstart,Name)
-
+	if fmt == 'tipsy': writetipsy(MGas, MDark, Ntot, Ndark, Ngas, posDark_Perturb, posGas_Perturb, velDark, velGas, temperature, hsml, gsoft,zstart,Name)
+	else: 
+		print "error, filetype not regonized. Attempting to write tipsy format anyway"
+		writetipsy(MGas, MDark, Ntot, Ndark, Ngas, posDark_Perturb, posGas_Perturb, velDark, velGas, temperature, hsml, gsoft,zstart,Name)
 	#print out important things for user reference
 	print "tbin file created in standard tipsy format!"
 	if Ngas > 0: print "Mass per particle: ", MDark[0], "(DM)", MGas[0], "(gas)"
