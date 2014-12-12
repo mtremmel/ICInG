@@ -71,7 +71,7 @@ Example (in python environment):
 
 >>import ICInG
 
->>ICInG.vanilla.genICs()
+>>ICInG.vanilla.genIC()
 
 ------------------
 Support and contact
