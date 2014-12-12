@@ -1,4 +1,4 @@
-ICInG ( *I*solated Collapse Initial Conditions Generator)
+ICInG ( **I**solated Collapse Initial Conditions Generator)
 
 ---------------
 Description
