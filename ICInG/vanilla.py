@@ -339,8 +339,8 @@ The Units will be cosmo50 units (see README file)
 		del(velDark_rad)
 	if Ngas > 0:
 	        velGas_rad =  vHubGas - vInFall_Gas
-	        velGas[:,0] += velGas_rad*np.sin(np.arccos(posGas_Perturb[:,2]/rGas))*posGas_Perturb[:,0]/np.sqrt(posGas_Perturb[:,0]**2+posGas_Perturb[:,1]**2)
-	        velGas[:,1] += velGas_rad*np.sin(np.arccos(posGas_Perturb[:,2]/rGas))*posGas_Perturb[:,1]/np.sqrt(posGas_Perturb[:,0]**2+posGas_Perturb[:,1]**2)
+	        velGas[:,0] += velGas_rad*np.sin(np.arccos(posGas_Perturb[:,2]/rGas_Perturb))*posGas_Perturb[:,0]/np.sqrt(posGas_Perturb[:,0]**2+posGas_Perturb[:,1]**2)
+	        velGas[:,1] += velGas_rad*np.sin(np.arccos(posGas_Perturb[:,2]/rGas_Perturb))*posGas_Perturb[:,1]/np.sqrt(posGas_Perturb[:,0]**2+posGas_Perturb[:,1]**2)
 	        velGas[:,2] += velGas_rad*(posGask_Perturb[:,2]/rGas_Perturb)
 		del(vHubGas)
 		del(vInFall_Gas)
