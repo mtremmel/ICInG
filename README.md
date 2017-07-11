@@ -14,7 +14,7 @@ Includes the ability to impart angular momentum as well as random motions to hel
 
 This was developed for use with Gasoline and ChaNGa N-body+SPH simulations, but should be able to be ported to other formats.
 
-Type help(pyCosmoColl.vanilla.genIC) in the python environment to get information on parameters to input.
+Type help(ICInG.vanilla.genIC) in the python environment to get information on parameters to input.
 
 -------------
 A Note on Units
